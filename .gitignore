@@ -4,8 +4,7 @@ __pycache__
 *.pyo
 
 # Vim
-*.swp
-*.swo
+*.sw?
 *~
 *.vim
 
