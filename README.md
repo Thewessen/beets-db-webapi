@@ -13,3 +13,12 @@ the bagend. Possibly the frontend is going to use Apolle as their main
 provider.
 
 For the backend, setting up [graphene-python](https://docs.graphene-python.org/en/latest/quickstart/) would be nice.
+Setting up:
+
+- graphene (installs graphene_sqlalchemy by default)
+
+- SQLAlchemy (for communication too the database)
+
+- Flask-GraphQL (Adds GraphQL support too Flask)
+
+

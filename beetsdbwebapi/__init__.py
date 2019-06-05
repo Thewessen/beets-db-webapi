@@ -1,4 +1,8 @@
 from flask import Flask, jsonify, abort, make_response, request
+from flask_graphql import GraphQLView
+
+from beetsdbwebapi.models import db_session
+from beetsdbwebapi.schema import schema
 
 # Temporary mock data.
 ALBUMS = [
@@ -16,13 +20,35 @@ ALBUMS = [
 
 app = Flask(__name__)
 
+app.add_url_rule(
+        '/graphql',
+        view_func=GraphQLView.as_view(
+            'graphql',
+            schema=schema,
+            graphiql=True
+        )
+)
+
+# Optional, for adding batch query support (used in Apollo-Client)
+# app.add_url_rule(
+#         '/graphql/batch',
+#         view_func=GraphQLView.as_view(
+#             'graphql',
+#             schema='{ hello }',
+#             batch=True
+#         )
+# )
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
+
 @app.route('/albums', methods=['GET'])
 def get_albums():
     return jsonify({'albums': ALBUMS})
+
 
 @app.route('/albums/<int:album_id>', methods=['GET'])
 def get_album(album_id):
@@ -32,6 +58,7 @@ def get_album(album_id):
     else:
         album = found_albums[0]
     return jsonify({'album': album})
+
 
 @app.route('/albums', methods=['POST'])
 def create_album():
@@ -48,6 +75,7 @@ def create_album():
     ALBUMS.append(album)
     return jsonify({'album': album}), 201
 
+
 @app.route('/albums/<int:album_id>', methods=['PUT'])
 def update_album(album_id):
     if not request.json:
@@ -60,11 +88,19 @@ def update_album(album_id):
         album = found_albums[0]
 
     album['album'] = request.json.get('album', album['album'])
-    album['albumartist'] = request.json.get('albumartist', album['albumartist'])
+    album['albumartist'] = request.json.get(
+                                    'albumartist',
+                                    album['albumartist']
+                           )
     album['year'] = request.json.get('year', album['year'])
     album['genre'] = request.json.get('genre', album['genre'])
 
     return jsonify({'album': album})
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
 
 if __name__ == '__main__':
