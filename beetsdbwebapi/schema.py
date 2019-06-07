@@ -1,42 +1,23 @@
 import graphene
-from graphene import relay
-from graphene_sqlalchemy import (SQLAlchemyObjectType,
-                                 SQLAlchemyConnectionField)
-from beetsdbwebapi.models import (Department as DepartmentModel,
-                                  Employee as EmployeeModel)
+from graphene_sqlalchemy import SQLAlchemyObjectType
+from beetsdbwebapi.models import Album as AlbumModel
+#from beetsdbwebapi.models import db_session
 
 
-class Department(SQLAlchemyObjectType):
+class Album(SQLAlchemyObjectType):
     class Meta:
-        model = DepartmentModel
-        interfaces = (relay.Node, )
-
-
-class DepartmentConnection(relay.Connection):
-    class Meta:
-        node = Department
-
-
-class Employee(SQLAlchemyObjectType):
-    class Meta:
-        model = EmployeeModel
-        interfaces = (relay.Node, )
-
-
-class EmployeeConnections(relay.Connection):
-    class Meta:
-        node = Employee
+        model = AlbumModel
 
 
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
-    # Allows sorting over multiple columns, by default over the primary key
-    all_employees = SQLAlchemyConnectionField(EmployeeConnections)
-    # Disable sorting over this field
-    all_departments = SQLAlchemyConnectionField(
-                          DepartmentConnection,
-                          sort=None
-                      )
+    albums = graphene.List(Album, contains=graphene.String())
+
+    def resolve_albums(_, info, contains=None):
+        q = Album.get_query(info)
+        if contains is not None:
+            return q.filter(AlbumModel.name.ilike(f'%{contains}%')).all()
+        else:
+            return q.all()
 
 
 schema = graphene.Schema(query=Query)
