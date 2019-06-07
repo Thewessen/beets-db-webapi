@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, abort, make_response, request
 from flask_graphql import GraphQLView
-
 from beetsdbwebapi.models import db_session
 from beetsdbwebapi.schema import schema
 

@@ -1,10 +1,9 @@
 import graphene
 from graphene import relay
-from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from beetsdbwebapi.models import (
-        Department as DepartmentModel,
-        Employee as EmployeeModel
-)
+from graphene_sqlalchemy import (SQLAlchemyObjectType,
+                                 SQLAlchemyConnectionField)
+from beetsdbwebapi.models import (Department as DepartmentModel,
+                                  Employee as EmployeeModel)
 
 
 class Department(SQLAlchemyObjectType):

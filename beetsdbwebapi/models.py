@@ -2,7 +2,6 @@ from sqlalchemy import (Integer, String, Column, create_engine,
                         DateTime, ForeignKey, func)
 from sqlalchemy.orm import (scoped_session, sessionmaker, relationship,
                             backref)
-
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = create_engine('sqlite:///database.sqlite3', convert_unicode=True)
