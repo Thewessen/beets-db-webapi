@@ -3,11 +3,13 @@ from flask import (Flask,
                    abort,
                    make_response,
                    request)
+from flask_cors import CORS
 from flask_graphql import GraphQLView
 from beetsdbwebapi.models import db_session
 from beetsdbwebapi.schema import schema
 
 app = Flask(__name__)
+CORS(app)
 
 app.add_url_rule('/graphql',
                  view_func=GraphQLView.as_view('graphql',
