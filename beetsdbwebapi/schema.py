@@ -51,14 +51,21 @@ class UpdateAlbum(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    albums = graphene.List(Album, contains=graphene.String())
+    albums = graphene.List(Album,
+                           name_contains=graphene.String(),
+                           genre_in=graphene.List(graphene.String))
 
-    def resolve_albums(_, info, contains=None):
+    def resolve_albums(_,
+                       info,
+                       name_contains=None,
+                       genre_in=None):
         q = Album.get_query(info)
-        if contains is not None:
-            return q.filter(AlbumModel.name.ilike(f'%{contains}%')).all()
-        else:
-            return q.all()
+        if name_contains is not None:
+           q = q.filter(AlbumModel.name.ilike(f'%{name_contains}%'))
+        if genre_in is not None:
+           q = q.filter(AlbumModel.genre.in_(genre_in))
+
+        return q.all()
 
 class Mutation(graphene.ObjectType):
     album = UpdateAlbum.Field()
