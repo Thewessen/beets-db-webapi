@@ -62,7 +62,7 @@ class Query(graphene.ObjectType):
         q = Album.get_query(info)
         if name_contains is not None:
            q = q.filter(AlbumModel.name.ilike(f'%{name_contains}%'))
-        if genre_in is not None:
+        if genre_in:
            q = q.filter(AlbumModel.genre.in_(genre_in))
 
         return q.all()
