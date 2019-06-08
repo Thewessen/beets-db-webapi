@@ -51,6 +51,7 @@ class UpdateAlbum(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
+    genres = graphene.List(graphene.String)
     albums = graphene.List(Album,
                            name_contains=graphene.String(),
                            genre_in=graphene.List(graphene.String))
@@ -66,6 +67,15 @@ class Query(graphene.ObjectType):
            q = q.filter(AlbumModel.genre.in_(genre_in))
 
         return q.all()
+    
+    def resolve_genres(_, info):
+        genres = []
+        for genre in db_session.query(AlbumModel.genre).distinct():
+            genres.append(genre[0])
+        return genres
+        
+
+
 
 class Mutation(graphene.ObjectType):
     album = UpdateAlbum.Field()
