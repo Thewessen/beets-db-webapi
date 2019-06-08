@@ -3,10 +3,11 @@ __pycache__
 *.pyc
 *.pyo
 
-# Vim
+# Vim and Visual Studio Code
 *.sw?
 *~
 *.vim
+/.vscode/
 
 # venv
 /venv/
