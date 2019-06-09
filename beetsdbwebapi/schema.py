@@ -71,7 +71,14 @@ class Query(graphene.ObjectType):
     def resolve_genres(_, info):
         genres = []
         for genre in db_session.query(AlbumModel.genre).distinct():
-            genres.append(genre[0])
+            genre = genre[0]
+            if not any(char in genre for char in '#,>'):  # Nice way to limit
+                                                          # the results for
+                                                          # development and
+                                                          # also only keep
+                                                          # nicely readable
+                                                          # genres.
+                genres.append(genre)
         return genres
         
 
